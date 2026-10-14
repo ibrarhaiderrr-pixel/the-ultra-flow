@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Ultra Flow — Seller Management Console</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    body { padding: 40px 20px; }
+    .admin-container { max-width: 900px; margin: 0 auto; }
+    .admin-card { background: #0d121c; border: 1px solid var(--border-glow); border-radius: var(--radius-lg); padding: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+    .back-home { color: var(--text-dim); text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+    .back-home:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <a href="/" class="back-home">← Back to Main Website</a>
+
+    <div class="admin-card">
+      <!-- Admin Login View -->
+      <div id="adminLoginView">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <img src="/logo.png" alt="Logo" class="modal-mini-logo" />
+            <div>
+              <span class="eyebrow">SELLER CONTROL PANEL</span>
+              <h3>The Ultra Flow — Seller Console</h3>
+            </div>
+          </div>
+        </div>
+
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" style="margin-top:20px;">
+          <div class="form-group">
+            <label>Seller Username</label>
+            <input type="text" id="adminUser" placeholder="admin" required />
+          </div>
+          <div class="form-group">
+            <label>Seller Password</label>
+            <input type="password" id="adminPass" placeholder="••••••••" required />
+          </div>
+          <div id="adminLoginError" class="alert-error" style="display:none;"></div>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:16px;">
+            Sign In to Seller Dashboard
+          </button>
+        </form>
+      </div>
+
+      <!-- Admin Authenticated View -->
+      <div id="adminDashboardView" style="display:none;">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <img src="/logo.png" alt="Logo" class="modal-mini-logo" />
+            <div>
+              <span class="eyebrow">SELLER CONSOLE</span>
+              <h3>The Ultra Flow Control Room</h3>
+            </div>
+          </div>
+          <button class="btn btn-danger-ghost btn-sm" onclick="handleAdminLogout()">Logout</button>
+        </div>
+
+        <!-- Admin Stats Bar -->
+        <div class="admin-stats-grid">
+          <div class="astat-card">
+            <span class="astat-label">TOTAL USERS</span>
+            <strong id="statTotalUsers" class="astat-val">0</strong>
+          </div>
+          <div class="astat-card">
+            <span class="astat-label">ACTIVE CLIENTS</span>
+            <strong id="statActiveUsers" class="astat-val stat-green">0</strong>
+          </div>
+          <div class="astat-card">
+            <span class="astat-label">EXPIRED</span>
+            <strong id="statExpiredUsers" class="astat-val stat-yellow">0</strong>
+          </div>
+          <div class="astat-card">
+            <span class="astat-label">BLOCKED</span>
+            <strong id="statBlockedUsers" class="astat-val stat-red">0</strong>
+          </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+          <button class="atab-btn active" onclick="switchAdminTab('createUser')">
+            <span>Generate New User</span>
+          </button>
+          <button class="atab-btn" onclick="switchAdminTab('manageUsers')">
+            <span>Manage Customers</span>
+          </button>
+          <button class="atab-btn" onclick="switchAdminTab('downloadSettings')">
+            <span>Download Links & Versions</span>
+          </button>
+        </div>
+
+        <!-- TAB 1: CREATE USER -->
+        <div id="tabCreateUser" class="atab-content">
+          <form id="createUserForm" onsubmit="handleCreateUser(event)" class="create-user-grid">
+            <div class="form-group">
+              <label>Customer Username</label>
+              <input type="text" id="newUsername" placeholder="e.g. ali_creator" required />
+            </div>
+
+            <div class="form-group">
+              <label>Password</label>
+              <div class="input-wrap">
+                <input type="text" id="newPasswordInput" placeholder="Password" required />
+                <button type="button" class="btn btn-secondary btn-xs" onclick="generateRandomPassword()">🎲 Auto</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Plan Name</label>
+              <input type="text" id="newPlanName" value="30 Days Pro Access" required />
+            </div>
+
+            <div class="form-group">
+              <label>Validity (Days)</label>
+              <input type="number" id="newDays" value="30" min="1" required />
+            </div>
+
+            <div class="full-width">
+              <button type="submit" class="btn btn-primary btn-block">Generate Account</button>
+            </div>
+          </form>
+
+          <!-- Generated Account Card (WhatsApp/Telegram ready) -->
+          <div id="generatedCard" class="generated-account-box" style="display:none;">
+            <div class="gen-box-header">
+              <span class="gen-tag">ACCOUNT CREATED</span>
+              <button class="btn btn-secondary btn-sm" onclick="copyAccountDetails()">
+                📋 Copy for WhatsApp / Telegram
+              </button>
+            </div>
+            <pre id="generatedAccountText" class="gen-pre"></pre>
+          </div>
+        </div>
+
+        <!-- TAB 2: MANAGE USERS -->
+        <div id="tabManageUsers" class="atab-content" style="display:none;">
+          <div class="search-bar-wrap">
+            <input type="text" id="userSearchInput" placeholder="Search customer by username..." oninput="filterUsersTable()" />
+          </div>
+
+          <div class="table-responsive">
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Plan</th>
+                  <th>Days Left</th>
+                  <th>Expiry Date</th>
+                  <th>Status</th>
+                  <th>Quick Actions</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: DOWNLOAD SETTINGS -->
+        <div id="tabDownloadSettings" class="atab-content" style="display:none;">
+          <form id="downloadSettingsForm" onsubmit="handleSaveDownloads(event)" class="download-settings-form">
+            <div class="down-setting-block">
+              <h4>Windows App (.exe) Settings</h4>
+              <div class="form-group">
+                <label>Version Tag</label>
+                <input type="text" id="winVersionInput" value="5.0.0" required />
+              </div>
+              <div class="form-group">
+                <label>File Name</label>
+                <input type="text" id="winFileNameInput" value="The-Ultra-Flow-v5.0.0-Setup.exe" required />
+              </div>
+              <div class="form-group">
+                <label>Download Link (Drive, Mega, etc.)</label>
+                <input type="text" id="winUrlInput" placeholder="https://..." />
+              </div>
+            </div>
+
+            <div class="down-setting-block">
+              <h4>Android APK Settings</h4>
+              <div class="form-group">
+                <label>Version Tag</label>
+                <input type="text" id="androidVersionInput" value="5.3.1" required />
+              </div>
+              <div class="form-group">
+                <label>File Name</label>
+                <input type="text" id="androidFileNameInput" value="The-Ultra-Flow-v5.3.1.apk" required />
+              </div>
+              <div class="form-group">
+                <label>Download Link (Drive, Mega, etc.)</label>
+                <input type="text" id="androidUrlInput" placeholder="https://..." />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Save Download Settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
