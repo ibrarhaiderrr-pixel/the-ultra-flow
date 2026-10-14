@@ -1,0 +1,12 @@
+name = "ultraflow-admin"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ultraflow-db"
+database_id = "79a37051-ff6b-4cec-8825-717cf1a91c4b"
