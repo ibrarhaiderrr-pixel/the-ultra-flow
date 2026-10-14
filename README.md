@@ -1,130 +1,179 @@
 # THE ULTRA FLOW — Project Guide (Handover)
 
-Yeh file is website ki poori details rakhti hai. Agar kabhi naye AI assistant (Antigravity, ChatGPT, Claude, waghera) se kaam karwana ho, to **yeh file usko de dein** — wo sab samajh jayega.
+> **Kal ya kisi naye account / naye AI se kaam shuru karna ho:** yeh file us AI ko de dein (ya `C:\Users\dell\Desktop\antigravity` ko workspace bana dein) aur **section 10** wala message bhej dein. Wo yahin se kaam shuru kar dega.
+
+Last update: 15 Oct 2026
 
 ---
 
-## 1. Website kya hai
+## 1. Project kya hai (short)
 
-- **Naam:** THE ULTRA FLOW
-- **Kaam:** Ek simple download/landing page. Windows (.exe) aur Android (.apk) app download karne ke liye.
-- **Website par koi Sign In / Sign Up nahi hai** — sirf downloads aur guides.
-- **Live link (permanent):** https://the-ultra-flow.vercel.app
+"THE ULTRA FLOW" — ek app business ka system. 3 hisse:
 
-### Page par sections (upar se neeche)
-1. Hero — Badge "OFFICIAL APP DOWNLOADS · V1.0 LIVE", heading "Create Beyond Limits With The Ultra Flow", tagline, Windows + Android download cards
-2. Setup video — abhi placeholder (asal video baad me lagani hai) + "Quick Help" card (VPN tips)
-3. How to install — Android banner + Windows SmartScreen guide image + 4 steps
-4. Google Sign-in Help — 2-Step Verification ke 3 steps + guide image
-5. About the app — 3 feature cards
-6. FAQ — sawal jawab
-7. Footer
+| Hissa | Kya hai | Status |
+|---|---|---|
+| **Download website** | Users ke liye landing page: Windows/Android download, install guide, Google 2-step guide, FAQ. Koi sign in nahi. | ✅ Live |
+| **Admin panel + backend** | Clients banana, expiry, devices, notices, pricing, WhatsApp package. Apps isi se login check karti hain. | ✅ Live |
+| **Reseller panel** | Resellers ko apna panel — sirf apne clients, credits/limits | ⏳ Next (section 7) |
+| **Windows app (.exe) / Android app (.apk)** | Login screen + server se active/expiry/device check + notices | ⏳ Baad me |
 
 ---
 
-## 2. Accounts aur jagah (kahan kya hai)
+## 2. Saare links aur accounts
 
 | Cheez | Detail |
 |---|---|
-| GitHub account | `ibrarhaiderrr-pixel` |
-| GitHub repo | https://github.com/ibrarhaiderrr-pixel/the-ultra-flow |
-| Hosting | Vercel (GitHub se login), project: `the-ultra-flow` |
-| Vercel setting | **Root Directory = `public`** (isko mat badlein) |
+| Download website (live) | https://the-ultra-flow.vercel.app |
+| Admin panel (live) | https://ultraflow-admin.admin-backend.workers.dev |
+| Admin password | Computer par `ADMIN-PASSWORD.txt` file me (yahan nahi likha — repo public hai). Panel > Settings se badal sakte hain. |
+| GitHub | account `ibrarhaiderrr-pixel`, repo https://github.com/ibrarhaiderrr-pixel/the-ultra-flow (**public**) |
+| Vercel | GitHub se login, project `the-ultra-flow`, **Root Directory = `public`** |
+| Cloudflare | account `ibrarhaiderrr@gmail.com` (ID `94790d1afa2dd88a0038e37629f74be5`), Worker `ultraflow-admin`, D1 database `ultraflow-db` (ID `79a37051-ff6b-4cec-8825-717cf1a91c4b`) |
 | Computer par folder | `C:\Users\dell\Desktop\antigravity` |
-| Kharcha | Free (koi card nahi diya) |
+| Kharcha | Sab free, koi card nahi |
 
-> Repo **public** hai — is me koi password ya secret mat daalein.
-
----
-
-## 3. Files (kaunsi file kya karti hai)
-
-Asal website sirf `public/` folder hai:
-
-| File | Kaam |
-|---|---|
-| `public/index.html` | Poora page — saara text, sections, download buttons |
-| `public/styles.css` | Design / colors / layout |
-| `public/app.js` | Chhota script (toast messages, download button behaviour) |
-| `public/logo.png` | Logo |
-| `public/guide-windows.png` | Windows SmartScreen guide tasveer |
-| `public/google-auth-guide.png` | Google 2-Step guide tasveer |
-| `deploy.js` | Changes ko GitHub par bhejta hai → Vercel site update kar deta hai |
-
-Baaqi files (`server.js`, `db.js`, `admin.html`, `data/`) sirf computer par local chalane ke liye hain. **Vercel par inka koi kaam nahi** — admin panel live site par nahi chalta.
+> Repo public hai — **kabhi bhi password, token ya secret GitHub par mat daalein.**
 
 ---
 
-## 4. Aam kaam kaise karein
-
-### A) Download links lagana (sab se zaroori)
-`public/index.html` me yeh do jagah hain:
-- `id="btnWinDownload"` wale `<a>` me `href="#"` ko Windows .exe ke link se badlein
-- `id="btnAndroidDownload"` wale `<a>` me `href="#"` ko Android .apk ke link se badlein
-
-**Zaroori:** `public/app.js` ka `loadPublicDownloads()` function local server se links mangta hai. Vercel par wo server nahi hai, is liye link seedha HTML me likhna hai, aur `app.js` me wo hissa aisa ho ke HTML wale link ko `#` se overwrite na kare.
-
-### B) Setup video lagana
-`public/index.html` me `id="videoPlayerBox"` ke andar placeholder hai. Usko YouTube embed se badlein:
-```html
-<div class="video-responsive-wrap">
-  <iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID?rel=0" allowfullscreen></iframe>
-</div>
-```
-(`.video-responsive-wrap` ka CSS `styles.css` me pehle se mojood hai.)
-
-### C) Text ya version badalna
-Sab text `public/index.html` me hai. Version badge ke liye "V1.0 LIVE" aur cards me "v1.0.0" dhoondein.
-
----
-
-## 5. Changes live kaise karein (deploy process)
-
-**Tareeqa 1 — Terminal se (AI assistant yeh kar sakta hai):**
-1. GitHub CLI login check: `"C:\Program Files\GitHub CLI\gh.exe" auth status`
-2. Agar login nahi: `"C:\Program Files\GitHub CLI\gh.exe" auth login --web` → https://github.com/login/device par code daalein → Authorize
-3. Project folder me: `node deploy.js`
-4. 1 minute baad https://the-ultra-flow.vercel.app check karein
-
-**Tareeqa 2 — Haath se (browser):**
-1. https://github.com/ibrarhaiderrr-pixel/the-ultra-flow kholein
-2. `public` folder me jayein → **Add file → Upload files**
-3. Badli hui files drag karein → **Commit changes**
-4. Vercel khud update kar dega
-
-> Agar naya computer ho aur GitHub CLI na ho: `winget install --id GitHub.cli -e`
-
----
-
-## 6. Computer par local chalana (optional)
-Node.js chahiye. Folder me:
-```
-npm install
-node server.js
-```
-Phir http://localhost:3000 kholein. (`Start-Website.bat` bhi yahi karta hai + ek temporary public link banata hai.)
-
----
-
-## 7. Naye AI ko dene ke liye ready message
-
-Yeh copy karke naye AI ko bhejein, saath me yeh file attach karein:
+## 3. Folder structure
 
 ```
-Mere paas "THE ULTRA FLOW" naam ki website hai. Poori details PROJECT-GUIDE.md me hain (attach hai).
-- Live: https://the-ultra-flow.vercel.app
-- Repo: https://github.com/ibrarhaiderrr-pixel/the-ultra-flow (website = public/ folder)
-- Hosting: Vercel, Root Directory = public, static site (koi backend nahi)
+antigravity/
+├── public/                 ← Download website (Vercel par yahi chalta hai)
+│   ├── index.html          ← Poora page / saara text
+│   ├── styles.css, app.js
+│   └── logo.png, guide-windows.png, google-auth-guide.png
+├── admin-backend/          ← Admin panel + API (Cloudflare Worker)
+│   ├── src/index.js        ← Saari API (admin + app)
+│   ├── schema.sql          ← Database tables
+│   ├── wrangler.toml       ← Cloudflare config
+│   ├── public/             ← Admin panel UI (index.html, admin.css, admin.js, views.js, logo.png)
+│   └── .dev.vars           ← Sirf local password (GitHub par nahi jata)
+├── docs/                   ← Plans, competitor analysis, screenshots
+├── PROJECT-GUIDE.md        ← Yeh file (GitHub par README.md)
+├── deploy.js               ← Website + backup GitHub par bhejta hai
+├── ADMIN-PASSWORD.txt      ← Live admin password (sirf computer par)
+├── competitor.mp4          ← Competitor ke admin panel ki video
+└── server.js, db.js, ...   ← Purana local server (ab zaroorat nahi)
+```
+
+---
+
+## 4. Download website
+
+Sections: Hero (V1.0 LIVE, "Create Beyond Limits With The Ultra Flow") → Setup video (placeholder) + Quick Help → How to install (Android + Windows SmartScreen) → Google 2-Step help → About → FAQ → Footer.
+
+**Pending:** asal download links (`public/index.html` me `id="btnWinDownload"` / `id="btnAndroidDownload"` ka `href`), asal setup video (`id="videoPlayerBox"`).
+Note: `public/app.js` ka `loadPublicDownloads()` purane local server se links mangta hai — Vercel par wo nahi hai, is liye links seedha HTML me likhne hain (ya isko admin backend ke `/api/public/releases` se jodna hai).
+
+**Update karna:** files badlein → `node deploy.js` (GitHub CLI login chahiye) → Vercel khud update.
+Ya browser se: GitHub repo → `public` folder → Add file → Upload files.
+
+---
+
+## 5. Admin panel + backend
+
+**Pages:** Dashboard · Clients (create/edit/renew/suspend/reset devices/new password/delete, search, filters) · Expiry Center (WhatsApp reminder) · Notices · Pricing Analytics · Devices (revoke) · Activity · Settings (brand, release links/versions, admin password).
+
+**Rules:**
+- Plan ke din client ki **pehli app login** par shuru hote hain ("Not activated" tab tak).
+- Device limit login par check hoti hai. Suspend / expire / device revoke = app band.
+- Client password sirf banate waqt (aur "New password" par) dikhta hai, database me hash hota hai.
+
+**App API (Windows/Android apps ke liye):**
+- `POST /api/app/login` — `{ username, password, device_id, platform, app_version, device_name }` → `token`, `allowed`, `account`, `notices`, `releases`
+- `GET /api/app/status` (header `Authorization: Bearer <token>`) — har dafa app khulne par / har kuch minute
+- `POST /api/app/logout`
+- `GET /api/public/releases` — latest versions/links
+
+**Database tables:** clients, devices, notices, activity, settings.
+
+**Local chalana:** `admin-backend` folder me `npm install` → `npx wrangler d1 execute ultraflow-db --local --file=schema.sql` → `npx wrangler dev --port 8787` → http://localhost:8787 (password `.dev.vars` me).
+
+**Live update (deploy):**
+1. Cloudflare API token banayein: https://dash.cloudflare.com/profile/api-tokens → Create Token → "Edit Cloudflare Workers" template → "+ Add more": Account / D1 / Edit → Create.
+2. PowerShell me `admin-backend` folder ke andar:
+   ```
+   $env:CLOUDFLARE_API_TOKEN='<token>'; $env:CLOUDFLARE_ACCOUNT_ID='94790d1afa2dd88a0038e37629f74be5'
+   npx wrangler deploy
+   ```
+3. Database me naya table/column ho to: `npx wrangler d1 execute ultraflow-db --remote --file=schema.sql`
+4. Kaam ke baad token delete kar dein.
+(`wrangler login` wala browser tareeqa is computer par baar baar fail hua tha — token wala tareeqa use karein.)
+
+**Tests:** `docs/tests/test-backend.js` (25 checks — login, device limit, suspend, renew, revoke...). Base URL aur password file ke upar badal kar `node test-backend.js`.
+
+**Pending chhota kaam:** `admin.css` me badge fix (status label ek line me) local par ho chuka hai, agli deploy me live jayega.
+
+---
+
+## 6. Jo jaan boojh kar NAHI banaya
+
+Competitor ke panel me "Accounts" page hai jahan ek Gmail kai clients ko diya jata hai (ek account → 59 clients) aur app un sab ko usi Google account se login karwati hai. Yeh Google subscription ko aage bechna hai (Google terms ke khilaf, accounts ban ho sakte hain). Is liye **Google accounts ka pool, unke password / Authenticator codes app me bhejna, ya auto-login nahi banaya gaya.** Baaqi licensing system normal hai.
+
+---
+
+## 7. NEXT: Reseller panel (kal yahin se shuru)
+
+**Zaroorat:** Resellers ko apna login/panel dena, jahan wo apne clients bana sakein.
+
+**Plan (proposed — kal confirm karna):**
+- Admin panel me naya page **Resellers**: reseller banana (naam, username, password, WhatsApp), suspend/delete, **credits** dena.
+- **Credits system:** har client banane / renew karne par reseller ke credits katte hain (e.g. 30 din = 1 credit). Admin credits top-up karta hai. Har transaction ka record.
+- **Reseller panel** (alag login, same link par role ke hisaab se): sirf **apne** clients dekhe/banaye/renew kare, apna balance aur history dekhe, WhatsApp package bheje. Doosre resellers ya admin ka data nahi dikhe.
+- Admin ko har client ke saath dikhe ke kis reseller ne banaya; reseller-wise sales/profit report.
+- Database: `resellers` table, `clients.reseller_id`, `credit_transactions` table.
+- Competitor me bhi yeh tha: "This client will be linked automatically to Haider. No seller selection is needed."
+
+**Kal decide karna:**
+1. Credits kaise katenge — per client, per din, ya fixed price PKR?
+2. Kya reseller client ko suspend/delete kar sake, ya sirf admin?
+3. Kya reseller apni selling price khud rakhe?
+4. Ek reseller ke neeche sub-reseller chahiye ya nahi?
+
+---
+
+## 8. Baad me: Windows / Android app
+
+- Windows: Electron (.exe). Android: (.apk).
+- Login screen → `/api/app/login` → app ke andar kaam → har kuch minute `/api/app/status` → `allowed=false` ho to app lock + message.
+- Notices app me dikhenge, days remaining, "update available" (min_app_version se).
+- **Abhi decide nahi hua:** app ke andar user ko asal me kya milega (Google shared accounts ke ilawa).
+
+---
+
+## 9. Pending list
+
+- [ ] Reseller panel (section 7)
+- [ ] Windows app (.exe) + Android app (.apk)
+- [ ] Website par asal download links + setup video
+- [ ] Admin panel ka badge fix deploy karna (agli deploy ke saath)
+- [ ] (Optional) Apna domain — Vercel / Cloudflare me lag jata hai
+
+---
+
+## 10. Naye AI ko dene ke liye ready message
+
+Copy karein, saath me yeh file attach karein (ya folder ko workspace banayein):
+
+```
+Mera project "THE ULTRA FLOW" hai. Poori details PROJECT-GUIDE.md me hain — pehle use poora parho.
 - Computer par folder: C:\Users\dell\Desktop\antigravity
-- Deploy: "node deploy.js" (GitHub CLI se upload karta hai, Vercel khud update hota hai)
+- GitHub (backup + website): https://github.com/ibrarhaiderrr-pixel/the-ultra-flow
+- Website (Vercel): https://the-ultra-flow.vercel.app
+- Admin panel (Cloudflare Worker + D1): https://ultraflow-admin.admin-backend.workers.dev — code admin-backend/ folder me
+- Shared Google accounts wala hissa nahi banana (guide section 6).
 
-Mujhe yeh kaam karwana hai: [YAHAN APNA KAAM LIKHEIN]
+Aaj ka kaam: [jaise: section 7 ka reseller panel banana]
 ```
 
 ---
 
-## 8. Kya pending hai
-- [ ] Windows .exe ka download link
-- [ ] Android .apk ka download link
-- [ ] Asal setup video (YouTube)
-- [ ] (Optional) Apna domain, jaise `theultraflow.com` — Vercel → Settings → Domains se lag jata hai
+## 11. Agar computer na ho (sirf GitHub se wapas lana)
+
+1. Naye computer par Node.js install karein.
+2. GitHub repo ka **Code → Download ZIP** karein aur extract karein.
+3. Website: `public/` folder. Admin backend: `admin-backend/` folder → `npm install`.
+4. Admin password Cloudflare me save hai (computer wali file na bhi ho to): naya set karna ho to token ke saath `npx wrangler secret put ADMIN_PASSWORD`.
+5. Live database Cloudflare par hai — computer kharab hone se clients ka data nahi jata.
